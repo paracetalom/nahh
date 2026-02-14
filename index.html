@@ -70,20 +70,110 @@ canvas{width:100%;height:100%;object-fit:cover;}
 <!-- INFO PAGE -->
 <div id="infoPage" class="page">
 <div style="padding:40px;">
-<h2>ข้อมูลพลาสติก</h2>
-<p><b>PET (1)</b> – ขวดน้ำดื่ม รีไซเคิลง่าย</p>
-<p><b>HDPE (2)</b> – ขวดแชมพู แข็งแรง ทนทาน</p>
-<p><b>Other (7)</b> – พลาสติกประเภทอื่น รีไซเคิลยาก</p>
 
-<h3 style="margin-top:30px;">เคล็ดลับ</h3>
-<ul>
+<!-- Hero Card -->
+<div style="
+background:linear-gradient(90deg,#10b981,#2563eb);
+color:white;
+padding:25px;
+border-radius:20px;
+margin-bottom:30px;
+box-shadow:0 4px 15px rgba(0,0,0,0.1);
+">
+<h2 style="margin:0 0 10px 0;">รู้จักประเภทพลาสติก</h2>
+<p style="margin:0;font-size:14px;">
+เรียนรู้การแยกขยะให้ถูกต้อง ช่วยลดโลกร้อน และเพิ่มประสิทธิภาพการรีไซเคิล
+</p>
+</div>
+
+<!-- Stats Section -->
+<div style="
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+gap:15px;
+margin-bottom:30px;
+">
+
+<div style="background:white;padding:20px;border-radius:15px;text-align:center;">
+<h3 style="margin:0;color:#10b981;">8 ล้านตัน</h3>
+<p style="font-size:12px;color:#777;">ขยะพลาสติก/ปี</p>
+</div>
+
+<div style="background:white;padding:20px;border-radius:15px;text-align:center;">
+<h3 style="margin:0;color:#2563eb;">91%</h3>
+<p style="font-size:12px;color:#777;">ไม่ได้ถูกรีไซเคิล</p>
+</div>
+
+<div style="background:white;padding:20px;border-radius:15px;text-align:center;">
+<h3 style="margin:0;color:#ef4444;">500 ปี</h3>
+<p style="font-size:12px;color:#777;">เวลาย่อยสลาย</p>
+</div>
+
+</div>
+
+<!-- Accordion Section -->
+<h3 style="margin-bottom:15px;">ประเภทที่ระบบตรวจจับได้</h3>
+
+<div class="accordion-card">
+<div class="accordion-header" onclick="toggleAccordion(this)">
+PET (1)
+<span>▼</span>
+</div>
+<div class="accordion-content">
+Polyethylene Terephthalate<br><br>
+✔ ใช้ทำขวดน้ำดื่ม ขวดเครื่องดื่ม<br>
+✔ รีไซเคิลง่ายมาก<br>
+⚠ ควรล้างก่อนทิ้ง
+</div>
+</div>
+
+<div class="accordion-card">
+<div class="accordion-header" onclick="toggleAccordion(this)">
+HDPE (2)
+<span>▼</span>
+</div>
+<div class="accordion-content">
+High-Density Polyethylene<br><br>
+✔ ขวดแชมพู แกลลอน ถังน้ำ<br>
+✔ แข็งแรง ทนสารเคมี<br>
+✔ รีไซเคิลได้ดี
+</div>
+</div>
+
+<div class="accordion-card">
+<div class="accordion-header" onclick="toggleAccordion(this)">
+Other (7)
+<span>▼</span>
+</div>
+<div class="accordion-content">
+พลาสติกผสม เช่น PC, ABS<br><br>
+❌ รีไซเคิลยาก<br>
+⚠ บางชนิดอาจมีสารอันตราย
+</div>
+</div>
+
+<!-- Tips -->
+<div style="
+margin-top:35px;
+background:#f1f5f9;
+padding:20px;
+border-radius:15px;
+">
+
+<h3>เคล็ดลับการรีไซเคิล</h3>
+
+<ul style="padding-left:18px;font-size:14px;line-height:1.7;">
 <li>ล้างภาชนะก่อนทิ้ง</li>
 <li>บีบขวดเพื่อลดพื้นที่</li>
 <li>แยกประเภทตามรหัส</li>
 <li>อย่าเผาพลาสติก</li>
 </ul>
+
+</div>
+
 </div>
 </div>
+
 
 <script>
 
@@ -207,3 +297,4 @@ document.querySelectorAll(".percent-text").forEach(e=>e.innerText="0%");
 </script>
 </body>
 </html>
+
