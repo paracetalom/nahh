@@ -298,9 +298,22 @@ initWebcam();
 }
 
 async function initWebcam(){
-webcam=new tmImage.Webcam(400,400,false);
-await webcam.setup({facingMode:currentFacingMode});
+
+const flip = currentFacingMode === "user"; // ถ้าเป็นกล้องหน้า ให้ flip
+
+webcam = new tmImage.Webcam(400, 400, flip);
+
+await webcam.setup({ facingMode: currentFacingMode });
 await webcam.play();
+
+document.getElementById("placeholder").style.display="none";
+document.getElementById("switchBtn").style.display="block";
+document.getElementById("webcam-container").appendChild(webcam.canvas);
+
+isCameraOn=true;
+loopId=requestAnimationFrame(loop);
+}
+
 
 document.getElementById("placeholder").style.display="none";
 document.getElementById("switchBtn").style.display="block";
@@ -369,5 +382,6 @@ if(loopId) cancelAnimationFrame(loopId);
 
 </body>
 </html>
+
 
 
