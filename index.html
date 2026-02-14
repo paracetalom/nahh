@@ -64,18 +64,24 @@ canvas{width:100%;height:100%;object-fit:cover;}
 </div>
 
 <div class="result-panel" id="result-panel"></div>
-
 <button class="bottom-btn" onclick="toggleCamera()">เปิด / ปิด กล้อง</button>
 </div>
 
+<!-- INFO PAGE -->
 <div id="infoPage" class="page">
 <div style="padding:40px;">
-<h3>PET</h3>
-<p>ขวดน้ำดื่ม รีไซเคิลง่าย</p>
-<h3>HDPE</h3>
-<p>ขวดแชมพู แข็งแรง ทนทาน</p>
-<h3>Other</h3>
-<p>พลาสติกประเภทอื่น รีไซเคิลยาก</p>
+<h2>ข้อมูลพลาสติก</h2>
+<p><b>PET (1)</b> – ขวดน้ำดื่ม รีไซเคิลง่าย</p>
+<p><b>HDPE (2)</b> – ขวดแชมพู แข็งแรง ทนทาน</p>
+<p><b>Other (7)</b> – พลาสติกประเภทอื่น รีไซเคิลยาก</p>
+
+<h3 style="margin-top:30px;">เคล็ดลับ</h3>
+<ul>
+<li>ล้างภาชนะก่อนทิ้ง</li>
+<li>บีบขวดเพื่อลดพื้นที่</li>
+<li>แยกประเภทตามรหัส</li>
+<li>อย่าเผาพลาสติก</li>
+</ul>
 </div>
 </div>
 
@@ -83,7 +89,7 @@ canvas{width:100%;height:100%;object-fit:cover;}
 
 const URL="https://teachablemachine.withgoogle.com/models/EV-mbCqpx/";
 
-let model, webcam, maxPredictions;
+let model, webcam;
 let isCameraOn=false;
 let currentFacingMode="environment";
 let loopId=null;
@@ -91,48 +97,43 @@ let loopId=null;
 /* โหลดโมเดล */
 async function loadModel(){
 model=await tmImage.load(URL+"model.json",URL+"metadata.json");
-maxPredictions=model.getTotalClasses();
 createBars();
 }
 loadModel();
 
-/* สร้าง progress bars */
 function createBars(){
 const panel=document.getElementById("result-panel");
 panel.innerHTML="";
 model.getClassLabels().forEach(label=>{
-const safeId=label.replace(/\s+/g,'');
+const id=label.replace(/\s+/g,'');
 panel.innerHTML+=`
 <div class="result-row">
 <div>${label}</div>
 <div class="progress-track">
-<span class="percent-text" id="text-${safeId}">0%</span>
-<div class="progress-fill" id="bar-${safeId}"></div>
+<span class="percent-text" id="text-${id}">0%</span>
+<div class="progress-fill" id="bar-${id}"></div>
 </div>
-</div>
-`;
+</div>`;
 });
 }
 
-/* Tabs */
 function showCamera(){
 document.getElementById("cameraPage").style.display="flex";
 document.getElementById("infoPage").style.display="none";
-setActiveTab(0);
+setActive(0);
 }
 
 function showInfo(){
 document.getElementById("cameraPage").style.display="none";
 document.getElementById("infoPage").style.display="block";
-setActiveTab(1);
+setActive(1);
 }
 
-function setActiveTab(index){
+function setActive(i){
 document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
-document.querySelectorAll(".tab")[index].classList.add("active");
+document.querySelectorAll(".tab")[i].classList.add("active");
 }
 
-/* เปิด/ปิดกล้อง */
 async function toggleCamera(){
 if(isCameraOn){
 await stopCamera();
@@ -143,9 +144,9 @@ await startCamera();
 
 async function startCamera(){
 
-const flip = currentFacingMode === "user";
+const flip=currentFacingMode==="user";
+webcam=new tmImage.Webcam(400,400,flip);
 
-webcam = new tmImage.Webcam(400,400,flip);
 await webcam.setup({facingMode:currentFacingMode});
 await webcam.play();
 
@@ -171,27 +172,16 @@ resetBars();
 isCameraOn=false;
 }
 
-/* สลับกล้องแบบไม่พัง */
 async function switchCamera(){
-
 if(!isCameraOn) return;
 
 currentFacingMode =
 currentFacingMode==="environment" ? "user" : "environment";
 
 await webcam.stop();
-
-const flip = currentFacingMode === "user";
-
-webcam = new tmImage.Webcam(400,400,flip);
-await webcam.setup({facingMode:currentFacingMode});
-await webcam.play();
-
-document.getElementById("webcam-container").innerHTML="";
-document.getElementById("webcam-container").appendChild(webcam.canvas);
+await startCamera();
 }
 
-/* Loop */
 async function loop(){
 if(!isCameraOn) return;
 webcam.update();
@@ -199,23 +189,14 @@ await predict();
 loopId=requestAnimationFrame(loop);
 }
 
-/* Predict */
 async function predict(){
 const prediction=await model.predict(webcam.canvas);
 prediction.forEach(p=>{
 const percent=Math.round(p.probability*100);
-updateBar(p.className,percent);
+const id=p.className.replace(/\s+/g,'');
+document.getElementById("bar-"+id).style.width=percent+"%";
+document.getElementById("text-"+id).innerText=percent+"%";
 });
-}
-
-function updateBar(label,percent){
-const safeId=label.replace(/\s+/g,'');
-const bar=document.getElementById("bar-"+safeId);
-const text=document.getElementById("text-"+safeId);
-if(bar){
-bar.style.width=percent+"%";
-text.innerText=percent+"%";
-}
 }
 
 function resetBars(){
